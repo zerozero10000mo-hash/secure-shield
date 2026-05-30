@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الدرع الأمني المطلق</title>
+<meta name="description" content="منظومة دفاعية متكاملة لحماية هاتفك على مدار الساعة">
+<meta name="theme-color" content="#020408">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void: #020408;
+    --deep: #050d14;
+    --surface: #0a1628;
+    --panel: #0d1f35;
+    --border: #1a3a5c;
+    --accent: #00d4ff;
+    --accent2: #0af5b8;
+    --accent3: #ff4d6d;
+    --gold: #f5c518;
+    --text: #e8f4ff;
+    --muted: #5a8ab0;
+    --glow: 0 0 30px rgba(0,212,255,0.3);
+    --glow2: 0 0 20px rgba(10,245,184,0.25);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--void);
+    color: var(--text);
+    font-family: 'Tajawal', sans-serif;
+    overflow-x: hidden;
+    direction: rtl;
+  }
+
+  /* Grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Radial glow center */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 900px;
+    height: 500px;
+    background: radial-gradient(ellipse, rgba(0,100,180,0.12) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 80px 24px 60px;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  /* Rotating rings */
+  .ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid;
+    opacity: 0.15;
+    pointer-events: none;
+    animation: spin linear infinite;
+  }
+  .ring:nth-child(1) { width: 600px; height: 600px; border-color: var(--accent); top: 50%; left: 50%; transform: translate(-50%,-50%); animation-duration: 30s; }
+  .ring:nth-child(2) { width: 820px; height: 820px; border-color: var(--accent2); top: 50%; left: 50%; transform: translate(-50%,-50%); animation-duration: 50s; animation-direction: reverse; }
+  .ring:nth-child(3) { width: 1040px; height: 1040px; border-color: var(--accent); top: 50%; left: 50%; transform: translate(-50%,-50%); animation-duration: 70s; opacity: 0.07; }
+
+  @keyframes spin {
+    from { transform: translate(-50%,-50%) rotate(0deg); }
+    to   { transform: translate(-50%,-50%) rotate(360deg); }
+  }
+
+  /* Shield icon */
+  .shield-wrap {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    margin: 0 auto 40px;
+    animation: float 4s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%,100% { transform: translateY(0); }
+    50%      { transform: translateY(-12px); }
+  }
+
+  .shield-wrap svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 0 20px rgba(0,212,255,0.6)) drop-shadow(0 0 60px rgba(0,212,255,0.2));
+  }
+
+  .pulse-ring {
+    position: absolute;
+    inset: -20px;
+    border-radius: 50%;
+    border: 2px solid rgba(0,212,255,0.3);
+    animation: pulse 2.5s ease-out infinite;
+  }
+  .pulse-ring:nth-child(2) { inset: -40px; animation-delay: 0.8s; }
+  .pulse-ring:nth-child(3) { inset: -60px; animation-delay: 1.6s; }
+  @keyframes pulse {
+    0%   { opacity: 0.6; transform: scale(0.95); }
+    100% { opacity: 0; transform: scale(1.1); }
+  }
+
+  .badge-live {
+    position: absolute;
+    top: 0; left: 0;
+    background: var(--accent3);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    animation: blink 1.5s ease-in-out infinite;
+    box-shadow: 0 0 15px rgba(255,77,109,0.5);
+  }
+  @keyframes blink {
+    0%,100% { opacity: 1; }
+    50%      { opacity: 0.5; }
+  }
+
+  .hero-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 5px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.3s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Cairo', sans-serif;
+    font-size: clamp(42px, 8vw, 90px);
+    font-weight: 900;
+    line-height: 1.05;
+    margin-bottom: 12px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.5s forwards;
+    background: linear-gradient(135deg, #fff 30%, var(--accent) 70%, var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-title span {
+    display: block;
+    font-size: clamp(28px, 5vw, 55px);
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    max-width: 640px;
+    font-size: 17px;
+    line-height: 1.8;
+    color: #7fb8d8;
+    margin: 0 auto 44px;
+    font-weight: 300;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.7s forwards;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.9s forwards;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), #0095b3);
+    color: var(--void);
+    font-family: 'Cairo', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    padding: 16px 42px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 0 0 30px rgba(0,212,255,0.4), inset 0 1px 0 rgba(255,255,255,0.2);
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(0,212,255,0.6); }
+  .btn-primary:hover::after { opacity: 1; }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--accent);
+    font-family: 'Cairo', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 15px 36px;
+    border: 1px solid rgba(0,212,255,0.4);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-outline:hover { background: rgba(0,212,255,0.08); border-color: var(--accent); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── STATS BAR ── */
+  .stats-bar {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    background: var(--deep);
+    padding: 28px 24px;
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'Cairo', sans-serif;
+    font-size: 36px;
+    font-weight: 900;
+    color: var(--accent);
+    display: block;
+    line-height: 1;
+    margin-bottom: 6px;
+    text-shadow: 0 0 20px rgba(0,212,255,0.4);
+  }
+  .stat-label {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+
+  /* ── SECTION ── */
+  section {
+    position: relative;
+    z-index: 1;
+    padding: 100px 24px;
+  }
+
+  .section-label {
+    text-align: center;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 6px;
+    color: var(--accent2);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Cairo', sans-serif;
+    font-size: clamp(30px, 5vw, 52px);
+    font-weight: 900;
+    text-align: center;
+    margin-bottom: 16px;
+    color: #fff;
+  }
+
+  .section-desc {
+    text-align: center;
+    max-width: 580px;
+    margin: 0 auto 70px;
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.8;
+  }
+
+  /* ── FEATURES GRID ── */
+  .features-grid {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .feature-card {
+    background: var(--deep);
+    padding: 44px 36px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .feature-card:hover { background: var(--panel); }
+  .feature-card:hover::before { opacity: 1; }
+
+  .feature-icon {
+    width: 58px;
+    height: 58px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    margin-bottom: 24px;
+    position: relative;
+  }
+
+  .feature-card:nth-child(1) .feature-icon { background: rgba(0,212,255,0.1); box-shadow: 0 0 20px rgba(0,212,255,0.15); }
+  .feature-card:nth-child(2) .feature-icon { background: rgba(10,245,184,0.1); box-shadow: 0 0 20px rgba(10,245,184,0.15); }
+  .feature-card:nth-child(3) .feature-icon { background: rgba(255,77,109,0.1); box-shadow: 0 0 20px rgba(255,77,109,0.15); }
+  .feature-card:nth-child(4) .feature-icon { background: rgba(245,197,24,0.1); box-shadow: 0 0 20px rgba(245,197,24,0.15); }
+  .feature-card:nth-child(5) .feature-icon { background: rgba(139,92,246,0.1); box-shadow: 0 0 20px rgba(139,92,246,0.15); }
+
+  .feature-num {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--border);
+    letter-spacing: 2px;
+    font-family: monospace;
+  }
+
+  .feature-title {
+    font-family: 'Cairo', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 14px;
+  }
+
+  .feature-desc {
+    font-size: 14px;
+    line-height: 1.85;
+    color: var(--muted);
+    font-weight: 300;
+  }
+
+  .feature-tag {
+    display: inline-block;
+    margin-top: 20px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    padding: 5px 14px;
+    border-radius: 2px;
+    text-transform: uppercase;
+  }
+  .tag-cyan  { background: rgba(0,212,255,0.1);   color: var(--accent);  border: 1px solid rgba(0,212,255,0.2); }
+  .tag-green { background: rgba(10,245,184,0.1);  color: var(--accent2); border: 1px solid rgba(10,245,184,0.2); }
+  .tag-red   { background: rgba(255,77,109,0.1);  color: var(--accent3); border: 1px solid rgba(255,77,109,0.2); }
+  .tag-gold  { background: rgba(245,197,24,0.1);  color: var(--gold);    border: 1px solid rgba(245,197,24,0.2); }
+  .tag-purple{ background: rgba(139,92,246,0.1);  color: #a78bfa;        border: 1px solid rgba(139,92,246,0.2); }
+
+  /* ── TERMINAL ── */
+  .terminal-section {
+    background: var(--deep);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .terminal-wrap {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  .terminal {
+    background: #010a10;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 60px rgba(0,212,255,0.08);
+  }
+
+  .terminal-bar {
+    background: var(--panel);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .t-dot { width: 12px; height: 12px; border-radius: 50%; }
+  .t-dot:nth-child(1) { background: #ff5f57; }
+  .t-dot:nth-child(2) { background: #febc2e; }
+  .t-dot:nth-child(3) { background: #28c840; }
+
+  .t-title {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: monospace;
+    margin: 0 auto;
+  }
+
+  .terminal-body {
+    padding: 28px 30px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 2.2;
+    direction: ltr;
+  }
+
+  .t-line { display: flex; gap: 14px; }
+  .t-prompt { color: var(--accent2); }
+  .t-cmd    { color: var(--accent); }
+  .t-ok     { color: var(--accent2); }
+  .t-warn   { color: var(--gold); }
+  .t-err    { color: var(--accent3); }
+  .t-info   { color: var(--muted); }
+
+  .cursor {
+    display: inline-block;
+    width: 8px;
+    height: 14px;
+    background: var(--accent);
+    vertical-align: middle;
+    animation: blink 1s step-end infinite;
+    margin-right: 4px;
+  }
+
+  /* ── PROTECTION METER ── */
+  .meter-section {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .meter-item {
+    margin-bottom: 28px;
+  }
+
+  .meter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .meter-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #c8dff0;
+  }
+
+  .meter-pct {
+    font-family: 'Cairo', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--accent);
+  }
+
+  .meter-track {
+    height: 6px;
+    background: var(--panel);
+    border-radius: 3px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .meter-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    box-shadow: 0 0 10px rgba(0,212,255,0.4);
+    width: 0;
+    transition: width 1.5s cubic-bezier(0.16,1,0.3,1);
+  }
+
+  /* ── FOOTER CTA ── */
+  .footer-cta {
+    text-align: center;
+    padding: 120px 24px;
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+    background: linear-gradient(180deg, var(--void), var(--deep));
+  }
+
+  .footer-shield {
+    font-size: 64px;
+    margin-bottom: 24px;
+    filter: drop-shadow(0 0 20px rgba(0,212,255,0.5));
+  }
+
+  .footer-title {
+    font-family: 'Cairo', sans-serif;
+    font-size: clamp(26px, 5vw, 48px);
+    font-weight: 900;
+    color: #fff;
+    margin-bottom: 16px;
+  }
+
+  .footer-sub {
+    font-size: 16px;
+    color: var(--muted);
+    max-width: 460px;
+    margin: 0 auto 44px;
+    line-height: 1.8;
+  }
+
+  .footer-copy {
+    margin-top: 80px;
+    font-size: 12px;
+    color: #2a4a6a;
+    letter-spacing: 1px;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--void); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  @media (max-width: 600px) {
+    .stats-bar { grid-template-columns: 1fr; }
+    .features-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="ring"></div>
+  <div class="ring"></div>
+  <div class="ring"></div>
+
+  <div class="shield-wrap">
+    <div class="pulse-ring"></div>
+    <div class="pulse-ring"></div>
+    <div class="pulse-ring"></div>
+    <div class="badge-live">LIVE</div>
+    <svg viewBox="0 0 100 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="sg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#00d4ff"/>
+          <stop offset="100%" stop-color="#0af5b8"/>
+        </linearGradient>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="2" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <path d="M50 5 L92 22 L92 52 C92 76 73 97 50 105 C27 97 8 76 8 52 L8 22 Z"
+            fill="rgba(0,212,255,0.08)" stroke="url(#sg)" stroke-width="1.5" filter="url(#glow)"/>
+      <path d="M50 18 L80 31 L80 53 C80 70 67 85 50 92 C33 85 20 70 20 53 L20 31 Z"
+            fill="rgba(0,212,255,0.05)" stroke="url(#sg)" stroke-width="1"/>
+      <!-- Checkmark -->
+      <path d="M36 52 L46 62 L65 43" stroke="url(#sg)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+
+  <p class="hero-label">النظام الأمني المتكامل</p>
+  <h1 class="hero-title">
+    الدرع الأمني المطلق
+    <span>حماية لا تنام</span>
+  </h1>
+  <p class="hero-sub">في عصرٍ أصبحت فيه بياناتك الشخصية والبنكية هي أثمن ما تملك، نقدم لك منظومة دفاعية متكاملة تمنحك الطمأنينة الكاملة على مدار الساعة.</p>
+  <div class="hero-cta">
+    <a href="#register" class="btn-primary">ابدأ الحماية الآن</a>
+    <a href="#features" class="btn-outline">اكتشف المزايا</a>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat">
+    <span class="stat-num">100%</span>
+    <span class="stat-label">معدل الكشف عن التهديدات</span>
+  </div>
+  <div class="stat">
+    <span class="stat-num">24/7</span>
+    <span class="stat-label">مراقبة مستمرة بلا توقف</span>
+  </div>
+  <div class="stat">
+    <span class="stat-num">&lt;1ms</span>
+    <span class="stat-label">زمن الاستجابة للتهديدات</span>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section id="features">
+  <p class="section-label">الميزات الأساسية</p>
+  <h2 class="section-title">منظومة دفاعية متكاملة</h2>
+  <p class="section-desc">خمسة طبقات حماية تعمل معاً لضمان أعلى مستويات الأمن الرقمي لجهازك وبياناتك.</p>
+
+  <div class="features-grid">
+
+    <div class="feature-card">
+      <div class="feature-num">01</div>
+      <div class="feature-icon">👁️</div>
+      <h3 class="feature-title">رقابة صارمة 24/7</h3>
+      <p class="feature-desc">يعمل التطبيق في خلفية النظام دون توقف، ليكون عينك الحارسة التي ترصد كل شاردة وواردة، ويضمن عدم حدوث أي نشاط مريب حتى أثناء نومك.</p>
+      <span class="feature-tag tag-cyan">مراقبة مستمرة</span>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-num">02</div>
+      <div class="feature-icon">🛡️</div>
+      <h3 class="feature-title">جدار الحماية الذكي</h3>
+      <p class="feature-desc">فحص فوري وتلقائي لكل ملف يتم تحميله أو رابط يتم الضغط عليه، مع عزل تام وتدمير أي تهديد أو فيروس يحاول اختراق دفاعات الهاتف.</p>
+      <span class="feature-tag tag-green">حماية فورية</span>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-num">03</div>
+      <div class="feature-icon">🔬</div>
+      <h3 class="feature-title">سلامة النظام الكاملة</h3>
+      <p class="feature-desc">تحليل مستمر لملفات النظام الأساسية، والتنبيه الفوري في حال حدوث أي تغيير غير مصرح به أو خلل في الإعدادات الأمنية للجهاز.</p>
+      <span class="feature-tag tag-red">تحليل فوري</span>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-num">04</div>
+      <div class="feature-icon">🔑</div>
+      <h3 class="feature-title">تحكم متكامل بالصلاحيات</h3>
+      <p class="feature-desc">يُحكم السيطرة على صلاحيات التطبيقات بأعلى درجات الحذر والسرية، لمنع التطبيقات الأخرى من استغلال ثغرات النظام أو الوصول غير المصرح به.</p>
+      <span class="feature-tag tag-gold">تحكم كامل</span>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-num">05</div>
+      <div class="feature-icon">📡</div>
+      <h3 class="feature-title">رصد الاتصالات الشبكية</h3>
+      <p class="feature-desc">مراقبة دقيقة لسلوك التطبيقات والأذونات الممنوحة لها والاتصالات الشبكية الخلفية، لضمان بيئة عمل آمنة ونقية تماماً من أي تهديد خفي.</p>
+      <span class="feature-tag tag-purple">رصد شبكي</span>
+    </div>
+
+  </div>
+</section>
+
+<!-- TERMINAL -->
+<section class="terminal-section">
+  <p class="section-label">سجل الحماية</p>
+  <h2 class="section-title" style="margin-bottom:50px;">النظام يعمل الآن</h2>
+
+  <div class="terminal-wrap">
+    <div class="terminal">
+      <div class="terminal-bar">
+        <div class="t-dot"></div>
+        <div class="t-dot"></div>
+        <div class="t-dot"></div>
+        <span class="t-title">secure-shield — system monitor — bash</span>
+      </div>
+      <div class="terminal-body">
+        <div class="t-line"><span class="t-prompt">$</span> <span class="t-cmd">secure-shield --start --all-protection</span></div>
+        <div class="t-line"><span class="t-ok">✓</span> <span class="t-info">تهيئة نواة الحماية... اكتمل</span></div>
+        <div class="t-line"><span class="t-ok">✓</span> <span class="t-info">تفعيل المراقبة المستمرة 24/7</span></div>
+        <div class="t-line"><span class="t-ok">✓</span> <span class="t-info">جدار الحماية نشط — 0 تهديدات</span></div>
+        <div class="t-line"><span class="t-ok">✓</span> <span class="t-info">مراقبة سلامة النظام: مفعّلة</span></div>
+        <div class="t-line"><span class="t-warn">⚠</span> <span class="t-info">تطبيق مشبوه — تم العزل الفوري</span></div>
+        <div class="t-line"><span class="t-ok">✓</span> <span class="t-info">تدمير التهديد: app.malware.apk — ناجح</span></div>
+        <div class="t-line"><span class="t-ok">✓</span> <span class="t-info">الشبكة نقية — لا اتصالات خلفية</span></div>
+        <div class="t-line"><span class="t-prompt">$</span> <span class="t-info">جهازك محمي بنسبة</span> <span class="t-cmd">100%</span> <span class="t-ok">■</span></div>
+        <div class="t-line"><span class="t-prompt">$</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROTECTION METERS -->
+<section>
+  <p class="section-label">مستوى الحماية</p>
+  <h2 class="section-title">تحليل الأداء الأمني</h2>
+  <p class="section-desc">مؤشرات الأداء الحالية لمنظومة الحماية على جهازك.</p>
+
+  <div class="meter-section" id="meters">
+    <div class="meter-item">
+      <div class="meter-header">
+        <span class="meter-name">🔍 كشف الفيروسات والبرمجيات الخبيثة</span>
+        <span class="meter-pct">100%</span>
+      </div>
+      <div class="meter-track"><div class="meter-fill" data-width="100"></div></div>
+    </div>
+    <div class="meter-item">
+      <div class="meter-header">
+        <span class="meter-name">🌐 أمان الشبكة والاتصالات</span>
+        <span class="meter-pct">98%</span>
+      </div>
+      <div class="meter-track"><div class="meter-fill" data-width="98"></div></div>
+    </div>
+    <div class="meter-item">
+      <div class="meter-header">
+        <span class="meter-name">🔑 إدارة الصلاحيات</span>
+        <span class="meter-pct">100%</span>
+      </div>
+      <div class="meter-track"><div class="meter-fill" data-width="100"></div></div>
+    </div>
+    <div class="meter-item">
+      <div class="meter-header">
+        <span class="meter-name">⚙️ سلامة ملفات النظام</span>
+        <span class="meter-pct">99%</span>
+      </div>
+      <div class="meter-track"><div class="meter-fill" data-width="99"></div></div>
+    </div>
+    <div class="meter-item">
+      <div class="meter-header">
+        <span class="meter-name">📱 مراقبة سلوك التطبيقات</span>
+        <span class="meter-pct">97%</span>
+      </div>
+      <div class="meter-track"><div class="meter-fill" data-width="97"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- REGISTER -->
+<section id="register" style="position:relative;z-index:1;padding:100px 24px;text-align:center;border-top:1px solid var(--border);">
+  <p class="section-label">انضم الآن</p>
+  <h2 class="section-title" style="margin-bottom:12px;">سجّل للحصول على النسخة التجريبية</h2>
+  <p class="section-desc">أدخل بياناتك وسنتواصل معك فور إطلاق النسخة الكاملة.</p>
+  <div style="max-width:380px;margin:0 auto;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:40px 32px;box-shadow:0 0 40px rgba(0,212,255,0.06);">
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <input type="text" placeholder="الاسم الكامل" required
+        style="padding:14px 16px;border-radius:4px;border:1px solid var(--border);background:var(--deep);color:var(--text);font-family:'Tajawal',sans-serif;font-size:15px;outline:none;transition:border-color 0.2s;"
+        onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+      <input type="email" placeholder="البريد الإلكتروني" required
+        style="padding:14px 16px;border-radius:4px;border:1px solid var(--border);background:var(--deep);color:var(--text);font-family:'Tajawal',sans-serif;font-size:15px;outline:none;transition:border-color 0.2s;"
+        onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+      <button type="button" onclick="handleRegister(this)"
+        style="padding:15px;background:linear-gradient(135deg,var(--accent),#0095b3);color:var(--void);font-family:'Cairo',sans-serif;font-size:16px;font-weight:800;border:none;border-radius:4px;cursor:pointer;box-shadow:0 0 20px rgba(0,212,255,0.3);transition:all 0.3s;"
+        onmouseover="this.style.boxShadow='0 0 40px rgba(0,212,255,0.5)'" onmouseout="this.style.boxShadow='0 0 20px rgba(0,212,255,0.3)'">
+        إرسال الطلب الآمن 🔒
+      </button>
+    </div>
+    <p style="margin-top:18px;font-size:12px;color:var(--muted);">?? بياناتك محمية ولن تُشارك مع أي طرف ثالث</p>
+  </div>
+</section>
+
+<!-- FOOTER CTA -->
+<section class="footer-cta">
+  <div class="footer-shield">🛡️</div>
+  <h2 class="footer-title">ابدأ حماية جهازك الآن</h2>
+  <p class="footer-sub">لا تنتظر حتى يُخترق جهازك. انضم إلى الملايين الذين يثقون في الدرع الأمني المطلق لحماية بياناتهم الشخصية والبنكية.</p>
+  <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+    <a href="#register" class="btn-primary">تحميل مجاني — ابدأ الآن</a>
+    <a href="#" class="btn-outline">تعرف على المزيد</a>
+  </div>
+  <p class="footer-copy">© 2026 الدرع الأمني المطلق — جميع الحقوق محفوظة · خصوصية · شروط الاستخدام</p>
+</section>
+
+<script>
+  // Animate meters on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.querySelectorAll('.meter-fill').forEach(fill => {
+          const w = fill.dataset.width;
+          setTimeout(() => { fill.style.width = w + '%'; }, 200);
+        });
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  const metersEl = document.getElementById('meters');
+  if (metersEl) observer.observe(metersEl);
+
+  // Register form handler
+  function handleRegister(btn) {
+    const section = document.getElementById('register');
+    const inputs = section.querySelectorAll('input');
+    const name = inputs[0].value.trim();
+    const email = inputs[1].value.trim();
+    if (!name || !email) {
+      inputs.forEach(i => { if (!i.value.trim()) i.style.borderColor = 'var(--accent3)'; });
+      return;
+    }
+    btn.textContent = '✓ تم إرسال طلبك بنجاح!';
+    btn.style.background = 'linear-gradient(135deg, var(--accent2), #07c48e)';
+    btn.disabled = true;
+    inputs.forEach(i => { i.disabled = true; i.style.opacity = '0.5'; });
+  }
+
+  // Register Service Worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
+
+  // Smooth scroll
+  document.querySelectorAll('a[href="#features"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      document.getElementById('features').scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+</script>
+</body>
+</html>
